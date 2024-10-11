@@ -9,8 +9,8 @@ const port = 3000;
 const { Client } = pg;
 const client = new Client({
     host: 'localhost',
-    port: 5432,
-    user: 'PITCHING_TESTER',
+    port: 5432, // use your postgres db port
+    user: 'PITCHING_TESTER', // create this user/pw in your own postgres
     password: 'pg_admin',
     database: 'pitching_stats_db'
 });
@@ -27,7 +27,7 @@ wss.on('connection', (ws) => {
 
     ws.on('message', async (message) => {  // server receives a message
         const msgStr = message.toString();
-        if (msgStr === 'getPitchers') { // client msg checks
+        if (msgStr === 'getPitchers') { // client msg checks, default initial message
             try {
                 const result = await client.query('SELECT * FROM pitcher ORDER BY last_name ASC');
                 ws.send(JSON.stringify(result.rows)); // send data to index.html
@@ -42,7 +42,7 @@ wss.on('connection', (ws) => {
             if (msgStr != 'getPitchers') {
                 console.log(msgStr);
                 const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
-                ws.send(JSON.stringify(result.rows)); // send data to index.html
+                ws.send(JSON.stringify(result.rows)); // send data via websocket to html file
             }
 
 

@@ -61,7 +61,7 @@
 
         socket.addEventListener('open', () => {
             console.log('WebSocket connection established');
-            socket.send('getPitchers'); // req data
+            socket.send('getPitchers'); // req data, this is the default send to get the pitchers sorted by last_name ASC.
         });
 
         socket.addEventListener('message', (event) => {
@@ -75,8 +75,8 @@
 
             // adding data
             const tableBody = document.querySelector('#pitcherTable tbody');
-            tableBody.innerHTML = ''; // Clear existing rows
-            pitcherData.forEach(row => {
+            tableBody.innerHTML = ''; // clear existing rows
+            pitcherData.forEach(row => { // repopulate with new data
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.last_name}</td>
@@ -114,7 +114,7 @@
 
         var current = -1;
 
-        function newQuery(x) {
+        function newQuery(x) { // sending a query based on the column we click, x corresponds to the index of the col. If our last column was the same, sort by DESC instead of ASC.
             var cols = ["last_name", "first_name", "innings_pitched", "strikeouts_percentage", "era", "wins", "losses"];
             if (current != x) {
                 socket.send(cols[x] + " ASC");
