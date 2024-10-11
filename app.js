@@ -27,8 +27,6 @@ wss.on('connection', (ws) => {
 
     ws.on('message', async (message) => {  // server receives a message
         const msgStr = message.toString();
-        console.log('Received:', msgStr);
-
         if (msgStr === 'getPitchers') { // client msg checks
             try {
                 const result = await client.query('SELECT * FROM pitcher ORDER BY last_name ASC');
@@ -38,6 +36,24 @@ wss.on('connection', (ws) => {
                 console.error(err);
             }
         }
+
+
+        try {
+            if (msgStr != 'getPitchers') {
+                console.log(msgStr);
+                const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
+                ws.send(JSON.stringify(result.rows)); // send data to index.html
+            }
+
+
+        } catch (err) {
+            ws.send(JSON.stringify({ error: 'Database query failed' })); // error
+            console.error(err);
+        }
+
+
+
+
     });
 
     ws.on('close', () => {

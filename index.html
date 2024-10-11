@@ -75,6 +75,7 @@
 
             // adding data
             const tableBody = document.querySelector('#pitcherTable tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
             pitcherData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -97,6 +98,33 @@
         socket.addEventListener('error', (error) => {
             console.error('WebSocket error:', error);
         });
+
+        document.querySelector('#pitcherTable').addEventListener('click', (ev) => {
+            const [x, y] = [
+                ev.target.cellIndex,
+                ev.target.parentElement.rowIndex
+            ];
+            if (x === undefined || y === undefined) {
+                return;
+            }
+            if (y == 0) {
+                newQuery(x);
+            }
+        })
+
+        var current = -1;
+
+        function newQuery(x) {
+            var cols = ["last_name", "first_name", "innings_pitched", "strikeouts_percentage", "era", "wins", "losses"];
+            if (current != x) {
+                socket.send(cols[x] + " ASC");
+            }
+            else {
+                socket.send(cols[x] + " DESC");
+            }
+            current = x;
+        }
+        
     </script>
 
 </body>
