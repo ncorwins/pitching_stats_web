@@ -99,7 +99,7 @@
             console.error('WebSocket error:', error);
         });
 
-        document.querySelector('#pitcherTable').addEventListener('click', (ev) => {
+        document.querySelector('#pitcherTable').addEventListener('click', (ev) => { // SOURCE: https://stackoverflow.com/questions/62196586/simple-javascript-to-know-which-cell-in-table-cell-clicked
             const [x, y] = [
                 ev.target.cellIndex,
                 ev.target.parentElement.rowIndex
