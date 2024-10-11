@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitcher Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pitcher Data</h1>
+    <table id="pitcherTable">
+        <thead>
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Innings Pitched</th>
+                <th>Strikeouts Percentage</th>
+                <th>ERA</th>
+                <th>Wins</th>
+                <th>Losses</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        // ws connection
+        const socket = new WebSocket('ws://localhost:3000');
+
+        socket.addEventListener('open', () => {
+            console.log('WebSocket connection established');
+            socket.send('getPitchers'); // req data
+        });
+
+        socket.addEventListener('message', (event) => {
+            console.log('Message from server:', event.data);
+            const pitcherData = JSON.parse(event.data);
+
+            if (pitcherData.error) {
+                console.error(pitcherData.error);
+                return;
+            }
+
+            // adding data
+            const tableBody = document.querySelector('#pitcherTable tbody');
+            pitcherData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.last_name}</td>
+                    <td>${row.first_name}</td>
+                    <td>${row.innings_pitched}</td>
+                    <td>${row.strikeouts_percentage}</td>
+                    <td>${row.era}</td>
+                    <td>${row.wins}</td>
+                    <td>${row.losses}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        });
+
+        socket.addEventListener('close', () => {
+            console.log('WebSocket connection closed');
+        });
+
+        socket.addEventListener('error', (error) => {
+            console.error('WebSocket error:', error);
+        });
+    </script>
+
+</body>
+</html>
