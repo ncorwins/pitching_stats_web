@@ -29,11 +29,29 @@
         th, td {
             padding: 12px;
             text-align: left;
+            position: relative;
         }
 
         th {
             background-color: #4CAF50;
             color: white;
+        }
+
+        th button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 8px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        th button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -42,13 +60,27 @@
     <table id="pitcherTable">
         <thead>
             <tr>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Innings Pitched</th>
-                <th>Strikeouts Percentage</th>
-                <th>ERA</th>
-                <th>Wins</th>
-                <th>Losses</th>
+                <th>Last Name
+                    <button onclick="toggleSort(0)">▲</button>
+                </th>
+                <th>First Name
+                    <button onclick="toggleSort(1)">—</button>
+                </th>
+                <th>Innings Pitched
+                    <button onclick="toggleSort(2)">—</button>
+                </th>
+                <th>Strikeouts Percentage
+                    <button onclick="toggleSort(3)">—</button>
+                </th>
+                <th>ERA
+                    <button onclick="toggleSort(4)">—</button>
+                </th>
+                <th>Wins
+                    <button onclick="toggleSort(5)">—</button>
+                </th>
+                <th>Losses
+                    <button onclick="toggleSort(6)">—</button>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -99,33 +131,30 @@
             console.error('WebSocket error:', error);
         });
 
-        document.querySelector('#pitcherTable').addEventListener('click', (ev) => { // SOURCE: https://stackoverflow.com/questions/62196586/simple-javascript-to-know-which-cell-in-table-cell-clicked
-            const [x, y] = [
-                ev.target.cellIndex,
-                ev.target.parentElement.rowIndex
-            ];
-            if (x === undefined || y === undefined) {
-                return;
-            }
-            if (y == 0) {
-                newQuery(x);
-            }
-        })
+        // Current sort direction for each column (0 = ASC, 1 = DESC)
+        let sortDirections = [0, 0, 0, 0, 0, 0, 0];
 
-        var current = -1;
+        // Function to toggle the sort direction and send the query
+        function toggleSort(columnIndex) {
+            const button = document.querySelectorAll('th button')[columnIndex];
+            const direction = sortDirections[columnIndex] === 0 ? 'ASC' : 'DESC';
+            const cols = ["last_name", "first_name", "innings_pitched", "strikeouts_percentage", "era", "wins", "losses"];
 
-        function newQuery(x) { // sending a query based on the column we click, x corresponds to the index of the col. If our last column was the same, sort by DESC instead of ASC.
-            var cols = ["last_name", "first_name", "innings_pitched", "strikeouts_percentage", "era", "wins", "losses"];
-            if (current != x) {
-                socket.send(cols[x] + " ASC");
-            }
-            else {
-                socket.send(cols[x] + " DESC");
-            }
-            current = x;
+            // Send sorting query
+            socket.send(cols[columnIndex] + " " + direction);
+
+            // Reset arrows for all columns to default dash state
+            document.querySelectorAll('th button').forEach((btn, index) => {
+                btn.textContent = '—';
+            });
+
+            // Toggle direction for the next click
+            sortDirections[columnIndex] = 1 - sortDirections[columnIndex];  // Toggle between 0 and 1
+
+            // Update the active column's button to show the correct direction
+            button.textContent = direction === 'ASC' ? '▲' : '▼';
         }
         
     </script>
-
 </body>
 </html>
