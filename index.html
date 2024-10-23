@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pitcher Data</title>
+    <title>Pitching Stats</title>
+
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,8 +15,22 @@
             padding: 20px;
         }
 
-        h1 {
-            color: #333;
+        /* Header styling with background image */
+        .header {
+            background-image: url('assets/stadium_image.JPG');  /* Path to your image */
+            background-size: cover;  /* Cover the entire header */
+            background-position: center;  /* Center the image */
+            height: 250px;  /* Adjust height to your preference */
+            display: flex;
+            align-items: center;  /* Center the content vertically */
+            justify-content: center;  /* Center the content horizontally */
+            color: white;  /* Text color */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);  /* Shadow for better readability */
+        }
+
+        .header h1 {
+            font-size: 3em;  /* Adjust the font size */
+            margin: 0;  /* Remove default margin */
         }
 
         table {
@@ -56,7 +73,10 @@
     </style>
 </head>
 <body>
-    <h1>Pitcher Data</h1>
+    <div class="header">
+        <h1>Pitching Stats Web App</h1>
+    </div>
+
     <table id="pitcherTable">
         <thead>
             <tr>

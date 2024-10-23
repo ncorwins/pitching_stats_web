@@ -22,6 +22,8 @@ client.connect()
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+app.use(express.static(path.join(__dirname, 'assets')));
+
 wss.on('connection', (ws) => {
     console.log('Client connected');
 
