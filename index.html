@@ -5,8 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pitching Stats</title>
 
+    <!-- Favicon for the browser tab logo -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 
+    <!-- Google Font: Permanent Marker -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <!-- Google Font: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Patrick+Hand+SC&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <!-- CSS Styling -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,26 +29,29 @@
 
         /* Header styling with background image */
         .header {
-            background-image: url('assets/stadium_image.JPG');  /* Path to your image */
-            background-size: cover;  /* Cover the entire header */
-            background-position: center;  /* Center the image */
-            height: 250px;  /* Adjust height to your preference */
+            background-image: url('assets/stadium_image.JPG');
+            background-size: cover;
+            background-position: center;
+            height: 250px;
             display: flex;
-            align-items: center;  /* Center the content vertically */
-            justify-content: center;  /* Center the content horizontally */
-            color: white;  /* Text color */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);  /* Shadow for better readability */
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
         .header h1 {
-            font-size: 3em;  /* Adjust the font size */
-            margin: 0;  /* Remove default margin */
+            font-family: 'Permanent Marker', sans-serif;
+            font-size: 3em;
+            margin: 0;
+            color:#ffffff;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            font-family: 'Montserrat', sans-serif;
         }
 
         table, th, td {
@@ -52,6 +67,12 @@
         th {
             background-color: #4CAF50;
             color: white;
+            font-size: 1.0em;
+        }
+
+        td {
+            font-size: 1.0em;
+            font-weight: 500;
         }
 
         th button {
