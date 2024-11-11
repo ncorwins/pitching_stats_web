@@ -9,10 +9,10 @@ const port = 3000;
 const { Client } = pg;
 const client = new Client({
     host: 'localhost',
-    port: 5432,                     // use your postgres db port
-    user: 'PITCHING_TESTER',        // create this user/pw in your own postgres
-    password: 'pg_admin',           // password for the PITCHING_TESTER user
-    database: 'pitching_stats_db'   // name of database
+    port: 5432, // use your postgres db port
+    user: 'PITCHING_TESTER', // create this user/pw in your own postgres
+    password: 'pg_admin',
+    database: 'pitching_stats_db'
 });
 
 client.connect()
@@ -22,14 +22,15 @@ client.connect()
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.use(express.static(path.join(__dirname, 'assets')));
-
 wss.on('connection', (ws) => {
     console.log('Client connected');
 
     ws.on('message', async (message) => {  // server receives a message
         const msgStr = message.toString();
-        if (msgStr === 'getPitchers') { // client msg checks, default initial message
+        const [queryType, ...params] = msgStr.split(':');
+        console.log(`Received message: ${msgStr}`);
+        console.log(`Query Type: ${queryType}, Param1: ${params[0]}, Param2: ${params[1]}`);
+        if (queryType === 'getPitchers') { // client msg checks, default initial message
             try {
                 const result = await client.query('SELECT * FROM pitcher ORDER BY last_name ASC');
                 ws.send(JSON.stringify(result.rows)); // send data to index.html
@@ -37,21 +38,43 @@ wss.on('connection', (ws) => {
                 ws.send(JSON.stringify({ error: 'Database query failed' })); // error
                 console.error(err);
             }
-        }
-
-
-        try {
-            if (msgStr != 'getPitchers') {
-                console.log(msgStr);
-                const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
-                ws.send(JSON.stringify(result.rows)); // send data via websocket to html file
+        } else if(queryType === 'getPitchersByTeam'){//dropdown, filter pitchers by each team
+            console.log(`Handling query of type: ${queryType}`)
+            try{
+                console.log(`Executing Query: SELECT * FROM pitcher p JOIN team t ON p.team_id = t.team_id WHERE t.team_name = $1 with param ${params[0]}`);
+                const resu = await client.query('SELECT * FROM pitcher p JOIN team t ON p.team_id = t.team_id WHERE t.team_name = $1', [params[0]]);//sql query for filtering pitchers by team
+                ws.send(JSON.stringify(resu.rows));
+            } catch(err) {
+                ws.send(JSON.stringify({ error: 'Database query failed' })); // error
+                console.error(err);
             }
+        } else if(queryType === 'getPitchersByName'){//searching pitchers by first and last name.
+            console.log(`Handling query of type: ${queryType}`)
+            try {
+                console.log(`Executing query: SELECT * FROM pitcher p WHERE LTRIM(p.first_name) = ${params[0]} AND p.last_name = ${params[1]}`);
+                const resu = await client.query('SELECT * FROM pitcher p WHERE LTRIM(p.first_name) = $1 AND p.last_name = $2', [params[0], params[1]]);//found leading whitespace in pitcher first names
+                //therefore had to trim whitespaces in the query.
+                ws.send(JSON.stringify(resu.rows));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+            } catch(err){
+                ws.send(JSON.stringify({error: 'Database query failed'}));
+                console.error(err);
+            }
+        } else {
 
 
-        } catch (err) {
-            ws.send(JSON.stringify({ error: 'Database query failed' })); // error
+            try {
+               if (queryType != 'getPitchers') {
+                   console.log(msgStr);
+                    const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
+                    ws.send(JSON.stringify(result.rows)); // send data via websocket to html file
+             }
+
+
+           } catch (err) {
+              ws.send(JSON.stringify({ error: 'Database query failed' })); // error
             console.error(err);
-        }
+            }
+        } 
 
 
 
