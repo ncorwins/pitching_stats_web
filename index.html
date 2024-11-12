@@ -351,32 +351,15 @@
             }
             current = x;
         }
-        async function searchPitchers(fn, ln){
-            const resp = await fetch(`/searchPitchers?fn=${fn}&ln=${ln}`);
-            const searchres = await resp.json();
-            const bodyTable = document.querySelector('#pitcherTable tbody');
-            bodyTable.innerHTML = '';
-            searchres.forEach(row => {
-                const sr = document.createElement('sr');
-                sr.innerHTML = `
-                <td>${row.last_name}</td>
-                <td>${row.first_name}</td>
-                <td>${row.innings_pitched}</td>
-                <td>${row.strikeouts_percentage}/td>
-                <td>${row.era}</td>
-                <td>${row.wins}</td>
-                <td>${row.losses}</td>`;
-                bodyTable.appendChild(sr)
-            });
-        }
+
         document.getElementById('SearchButton').addEventListener('click', () => {// search functionality
             const fn = document.getElementById('firstName').value.trim();   // first name
             const ln = document.getElementById('lastName').value.trim();    // last name
             const q = `getPitchersByName:${fn}:${ln}`;// send query
-            console.log("Sending query:", query);   //FIXME: debugging
+            console.log("Sending query:", q);   //FIXME: debugging
             socket.send(q)
-            searchPitchers(fn, ln);
         })
+
         document.getElementById('teamDropdown').addEventListener('change', () => {//dropdown functionality
             const team = document.getElementById('teamDropdown').value; //dropdown value
             //let url = '/pitcher';
@@ -384,6 +367,7 @@
             console.log("Sending query:", query);   //FIXME: debugging
             socket.send(query);
         })
+
         let sortDirections = [0, 0, 0, 0, 0, 0, 0];
 
         // Function to toggle the sort direction and send the query

@@ -50,24 +50,36 @@ wss.on('connection', (ws) => {
                 ws.send(JSON.stringify({ error: 'Database query failed' })); // error
                 console.error(err);
             }
-        } 
+        } else if (queryType === 'getPitchersByName') {
+            console.log(`Handling query of type: ${queryType}`);
+            const firstName = params[0] ? params[0].trim() : '';
+            const lastName = params[1] ? params[1].trim() : '';
+            let query = 'SELECT * FROM pitcher p';
+            const queryParams = [];
+            let conditions = [];
         
-        else if(queryType === 'getPitchersByName'){//searching pitchers by first and last name.
-            console.log(`Handling query of type: ${queryType}`)
+            if (firstName) {
+                conditions.push(`LTRIM(p.first_name) ILIKE $${queryParams.length + 1}`);
+                queryParams.push(firstName);
+            }
+            if (lastName) {
+                conditions.push(`p.last_name ILIKE $${queryParams.length + 1}`);
+                queryParams.push(lastName);
+            }
+        
+            if (conditions.length > 0) {
+                query += ' WHERE ' + conditions.join(' OR ');
+            }
+        
             try {
-                console.log(`Executing query: SELECT * FROM pitcher p WHERE LTRIM(p.first_name) = ${params[0]} AND p.last_name = ${params[1]}`);
-                const resu = await client.query('SELECT * FROM pitcher p WHERE LTRIM(p.first_name) = $1 AND p.last_name = $2', [params[0], params[1]]);//found leading whitespace in pitcher first names
-                //therefore had to trim whitespaces in the query.
-                ws.send(JSON.stringify(resu.rows));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-            } catch(err){
-                ws.send(JSON.stringify({error: 'Database query failed'}));
+                console.log(`Executing query: ${query} with params ${queryParams}`);
+                const resu = await client.query(query, queryParams);
+                ws.send(JSON.stringify(resu.rows));
+            } catch (err) {
+                ws.send(JSON.stringify({ error: 'Database query failed' }));
                 console.error(err);
             }
-        } 
-        
-        else {
-
-
+        } else {
             try {
                if (queryType != 'getPitchers') {
                    console.log(msgStr);
