@@ -32,6 +32,7 @@ wss.on('connection', (ws) => {
         const [queryType, ...params] = msgStr.split(':');
         console.log(`Received message: ${msgStr}`);
         console.log(`Query Type: ${queryType}, Param1: ${params[0]}, Param2: ${params[1]}`);
+        
         if (queryType === 'getPitchers') { // client msg checks, default initial message
             try {
                 const result = await client.query('SELECT * FROM pitcher ORDER BY last_name ASC');
