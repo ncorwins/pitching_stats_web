@@ -22,14 +22,18 @@ client.connect()
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, '/assets')));
 
 wss.on('connection', (ws) => {
     console.log('Client connected');
 
     ws.on('message', async (message) => {  // server receives a message
         const msgStr = message.toString();
-        if (msgStr === 'getPitchers') { // client msg checks, default initial message
+        const [queryType, ...params] = msgStr.split(':');
+        console.log(`Received message: ${msgStr}`);
+        console.log(`Query Type: ${queryType}, Param1: ${params[0]}, Param2: ${params[1]}`);
+        
+        if (queryType === 'getPitchers') { // client msg checks, default initial message
             try {
                 const result = await client.query('SELECT * FROM pitcher ORDER BY last_name ASC');
                 ws.send(JSON.stringify(result.rows)); // send data to index.html
@@ -37,25 +41,59 @@ wss.on('connection', (ws) => {
                 ws.send(JSON.stringify({ error: 'Database query failed' })); // error
                 console.error(err);
             }
-        }
-
-
-        try {
-            if (msgStr != 'getPitchers') {
-                console.log(msgStr);
-                const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
-                ws.send(JSON.stringify(result.rows)); // send data via websocket to html file
+        } else if(queryType === 'getPitchersByTeam'){//dropdown, filter pitchers by each team
+            console.log(`Handling query of type: ${queryType}`)
+            try{
+                console.log(`Executing Query: SELECT * FROM pitcher p JOIN team t ON p.team_id = t.team_id WHERE t.team_name = $1 with param ${params[0]}`);
+                const resu = await client.query('SELECT * FROM pitcher p JOIN team t ON p.team_id = t.team_id WHERE t.team_name = $1', [params[0]]);//sql query for filtering pitchers by team
+                ws.send(JSON.stringify(resu.rows));
+            } catch(err) {
+                ws.send(JSON.stringify({ error: 'Database query failed' })); // error
+                console.error(err);
             }
+        } else if (queryType === 'getPitchersByName') {
+            console.log(`Handling query of type: ${queryType}`);
+            const firstName = params[0] ? params[0].trim() : '';
+            const lastName = params[1] ? params[1].trim() : '';
+            let query = 'SELECT * FROM pitcher p';
+            const queryParams = [];
+            let conditions = [];
+        
+            if (firstName) {
+                conditions.push(`LTRIM(p.first_name) ILIKE $${queryParams.length + 1}`);
+                queryParams.push(firstName);
+            }
+            if (lastName) {
+                conditions.push(`p.last_name ILIKE $${queryParams.length + 1}`);
+                queryParams.push(lastName);
+            }
+        
+            if (conditions.length > 0) {
+                query += ' WHERE ' + conditions.join(' OR ');
+            }
+        
+            try {
+                console.log(`Executing query: ${query} with params ${queryParams}`);
+                const resu = await client.query(query, queryParams);
+                ws.send(JSON.stringify(resu.rows));
+            } catch (err) {
+                ws.send(JSON.stringify({ error: 'Database query failed' }));
+                console.error(err);
+            }
+        } else {
+            try {
+               if (queryType != 'getPitchers') {
+                   console.log(msgStr);
+                    const result = await client.query('SELECT * FROM pitcher ORDER BY ' + msgStr);
+                    ws.send(JSON.stringify(result.rows)); // send data via websocket to html file
+             }
 
 
-        } catch (err) {
-            ws.send(JSON.stringify({ error: 'Database query failed' })); // error
+           } catch (err) {
+              ws.send(JSON.stringify({ error: 'Database query failed' })); // error
             console.error(err);
-        }
-
-
-
-
+            }
+        } 
     });
 
     ws.on('close', () => {

@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pitching Stats</title>
+     <!-- Favicon for the browser tab logo -->
+     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 
-    <!-- Favicon for the browser tab logo -->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-
-    <!-- Google Font: Permanent Marker -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    
-    <!-- Google Font: Montserrat -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Patrick+Hand+SC&family=Permanent+Marker&display=swap" rel="stylesheet">
-
-    <!-- CSS Styling -->
+     <!-- Google Font: Permanent Marker -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+     
+     <!-- Google Font: Montserrat -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Patrick+Hand+SC&family=Permanent+Marker&display=swap" rel="stylesheet">
+ 
     <style>
         html {
             scroll-behavior: smooth;
@@ -87,7 +85,58 @@
             text-align: left;
         }
 
-        table {
+        #filterBox {
+            display:flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #firstName, #lastName,
+        #SearchButton, #teamDropdown,
+        #teamDropdown2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8em;
+        }
+
+        #section2 {
+            font-family: 'Montserrat';
+        }
+
+        #teamInfoBox {
+            margin-bottom: 15px;
+        }
+
+        #teamInfoTable {
+            width: 100%;
+            max-width: 400px; /* Adjust width as needed */
+            border-collapse: collapse;
+        }
+
+        #teamInfoTable td {
+            padding: 8px 10px;
+            vertical-align: top;
+        }
+
+        #teamInfoTable .label {
+            text-align: right;
+            font-weight: bold;
+            width: 120px; /* Adjust width for label alignment */
+        }
+
+        #teamInfoTable td:not(.label) {
+            text-align: left;
+        }
+
+        #teamInfoBox1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #pitcherTable {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
@@ -97,7 +146,7 @@
             border: 1px solid #333;
         }
 
-        table::before {
+        #pitcherTable::before {
             content: '';
             background-image: url('assets/home_plate.jpeg');
             background-size:cover;
@@ -111,7 +160,7 @@
             z-index: -1;
         }
 
-        table, th, td {
+        #pitcherTable, th, td {
             border: 1px solid #ddd;
         }
 
@@ -171,25 +220,71 @@
         .footer button:hover {
             background-color: #45a049;
         }
-
     </style>
 </head>
 <body>
-
     <!-- Header/Navigation Bar -->
     <div class="header">
         <h1>Pitching Stats Web App</h1>
         <div class="nav-bar">
             <a href="#pitcherStatsSection">Pitcher Stats</a>
-            <a href="#section2">Section 2</a>
-            <a href="#section3">Section 3</a>
-            <a href="#section4">Section 4</a>
+            <a href="#section2">Team Info</a>
         </div>
     </div>
 
     <!-- Pitcher Stats Section -->
     <div id="pitcherStatsSection" class="section">
         <h2>Pitcher Stats</h2>
+                    
+        <!-- Filtering Options -->
+        <div id="filterBox">
+            <div id="teamBox">
+            <label id="filterLabel" for="teamDropdown">Filter By Team: </label>
+                <select id="teamDropdown">
+                    <option value ="">All</option>
+                    <option value="Dodgers">Dodgers</option>
+                    <option value="Padres">Padres</option>
+                    <option value="Diamondbacks">Diamondbacks</option>
+                    <option value="Giants">Giants</option>
+                    <option value="Rockies">Rockies</option>
+                    <option value="Athletics">Athletics</option>
+                    <option value="Astros">Astros</option>
+                    <option value="Rangers">Rangers</option>
+                    <option value="Mariners">Mariners</option>
+                    <option value="Pirates">Pirates</option>
+                    <option value="Cubs">Cubs</option>
+                    <option value="Reds">Reds</option>
+                    <option value="Cardinals">Cardinals</option>
+                    <option value="Brewers">Brewers</option>
+                    <option value="Twins">Twins</option>
+                    <option value="Tigers">Tigers</option>
+                    <option value="Guardians">Guardians</option>
+                    <option value="Royals">Royals</option>
+                    <option value="White Sox">White Sox</option>
+                    <option value="Mets">Mets</option>
+                    <option value="Nationals">Nationals</option>
+                    <option value="Marlins">Marlins</option>
+                    <option value="Braves">Braves</option>
+                    <option value="Phillies">Phillies</option>
+                    <option value="Yankees">Yankees</option>
+                    <option value="Red Sox">Red Sox</option>
+                    <option value="Rays">Rays</option>
+                    <option value="Blue Jays">Blue Jays</option>
+                    <option value="Orioles">Orioles</option>
+                </select>
+            </div>
+            <div id="firstNameBox">
+                <label id="filterLabel" for="firstName">First Name: </label>
+                <input type="text" id="firstName" placeholder = "Enter pitcher first name">
+            </div>
+            <div id="lastNameBox">
+                <label id="filterLabel" for="lastName">Last Name: </label>
+                <input type="text" id="lastName" placeholder = "Enter pitcher last name">
+            </div>
+            <button id="SearchButton">Search Pitchers</button>
+        </div>  
+
+        <!-- Pitcher Table -->
         <table id="pitcherTable">
             <thead>
                 <tr>
@@ -221,25 +316,76 @@
         </table>
     </div>
 
-    <!-- Section Placeholders -->
+    <!-- Team Info Section -->
     <div id="section2" class="section">
-        <h2>Section 2</h2>
-        <p>This is section 2 content.</p>
+        <h2>Team Info</h2>
+        
+        <div id="teamInfoBox1">
+            <!-- Team Selection Dropdown -->
+            <div id="teamInfoBox">
+                <label id="teamInfoLabel" for="teamDropdown2">Select a Team: </label>
+                <select id="teamDropdown2">
+                    <option value ="">All</option>
+                    <option value="Dodgers">Dodgers</option>
+                    <option value="Padres">Padres</option>
+                    <option value="Diamondbacks">Diamondbacks</option>
+                    <option value="Giants">Giants</option>
+                    <option value="Rockies">Rockies</option>
+                    <option value="Athletics">Athletics</option>
+                    <option value="Astros">Astros</option>
+                    <option value="Rangers">Rangers</option>
+                    <option value="Mariners">Mariners</option>
+                    <option value="Pirates">Pirates</option>
+                    <option value="Cubs">Cubs</option>
+                    <option value="Reds">Reds</option>
+                    <option value="Cardinals">Cardinals</option>
+                    <option value="Brewers">Brewers</option>
+                    <option value="Twins">Twins</option>
+                    <option value="Tigers">Tigers</option>
+                    <option value="Guardians">Guardians</option>
+                    <option value="Royals">Royals</option>
+                    <option value="White Sox">White Sox</option>
+                    <option value="Mets">Mets</option>
+                    <option value="Nationals">Nationals</option>
+                    <option value="Marlins">Marlins</option>
+                    <option value="Braves">Braves</option>
+                    <option value="Phillies">Phillies</option>
+                    <option value="Yankees">Yankees</option>
+                    <option value="Red Sox">Red Sox</option>
+                    <option value="Rays">Rays</option>
+                    <option value="Blue Jays">Blue Jays</option>
+                    <option value="Orioles">Orioles</option>
+                </select>
+            </div>
+
+            <!-- Team Info Table -->
+            <table id="teamInfoTable">
+                <tr>
+                    <td class="label">Team Name:</td>
+                    <td id="teamName"></td>
+                </tr>
+                <tr>
+                    <td class="label">Stadium:</td>
+                    <td id="stadium"></td>
+                </tr>
+                <tr>
+                    <td class="label">City:</td>
+                    <td id="city"></td>
+                </tr>
+                <tr>
+                    <td class="label">Pitchers:</td>
+                    <td>
+                        <ul id="pitchersList"></ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-
-    <div id="section3" class="section">
-        <h2>Section 3</h2>
-        <p>This is section 3 content.</p>
-    </div>
-
-    <div id="section4" class="section">
-        <h2>Section 4</h2>
-        <p>This is section 4 content.</p>
-    </div>    
-
+    
     <div class="footer">
         <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Return to Top</button>
     </div>
+
 
     <script>
         // ws connection
@@ -258,6 +404,25 @@
                 console.error(pitcherData.error);
                 return;
             }
+
+            // Check if this is the team info response
+            if (pitcherData.queryType === 'teamInfo') {
+                // Update team info elements
+                document.getElementById('teamName').textContent = data.teamName || 'N/A';
+                document.getElementById('stadium').textContent = data.stadium || 'N/A';
+                document.getElementById('city').textContent = data.city || 'N/A';
+
+                // Populate the pitchers list
+                const pitchersList = document.getElementById('pitchersList');
+                pitchersList.innerHTML = ''; // Clear previous entries
+
+                data.pitchers.forEach(pitcher => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${pitcher.firstName} ${pitcher.lastName}`;
+                    pitchersList.appendChild(listItem);
+                });
+            }
+
 
             // adding data
             const tableBody = document.querySelector('#pitcherTable tbody');
@@ -285,7 +450,72 @@
             console.error('WebSocket error:', error);
         });
 
-        // Current sort direction for each column (0 = ASC, 1 = DESC)
+        document.querySelector('#pitcherTable').addEventListener('click', (ev) => { // SOURCE: https://stackoverflow.com/questions/62196586/simple-javascript-to-know-which-cell-in-table-cell-clicked
+            const [x, y] = [
+                ev.target.cellIndex,
+                ev.target.parentElement.rowIndex
+            ];
+            if (x === undefined || y === undefined) {
+                return;
+            }
+            if (y == 0) {
+                newQuery(x);
+            }
+        })
+
+        var current = -1;
+
+        function newQuery(x) { // sending a query based on the column we click, x corresponds to the index of the col. If our last column was the same, sort by DESC instead of ASC.
+            var cols = ["last_name", "first_name", "innings_pitched", "strikeouts_percentage", "era", "wins", "losses"];
+            if (current != x) {
+                socket.send(cols[x] + " ASC");
+            }
+            else {
+                socket.send(cols[x] + " DESC");
+            }
+            current = x;
+        }
+
+        document.getElementById('SearchButton').addEventListener('click', () => {// search functionality
+            const fn = document.getElementById('firstName').value.trim();   // first name
+            const ln = document.getElementById('lastName').value.trim();    // last name
+
+            if (!fn || !ln) {
+                alert("Please enter both first name and last name.");
+                return;
+            }
+
+            const q = `getPitchersByName:${fn}:${ln}`;// send query
+            socket.send(q)
+        })
+
+        document.getElementById('teamDropdown').addEventListener('change', () => {//dropdown functionality
+            const team = document.getElementById('teamDropdown').value; //dropdown value
+            //let url = '/pitcher';
+            const query = team ? `getPitchersByTeam:${team}` : 'getPitchers';   //send query
+            socket.send(query);
+        })
+
+        document.getElementById('teamDropdown2').addEventListener('change', () => {
+            const selectedTeam = document.getElementById('teamDropdown2').value;
+
+            if (selectedTeam) {
+                // Send a query to the server to get the team info
+                const queryData = {
+                    queryType: 'getTeamInfo',
+                    teamName: selectedTeam
+                };
+
+                socket.send(JSON.stringify(queryData)); // Send query to server
+            } else {
+                // Clear the team info table if "All" or no team is selected
+                document.getElementById('teamName').textContent = '';
+                document.getElementById('stadium').textContent = '';
+                document.getElementById('city').textContent = '';
+                document.getElementById('pitchersList').innerHTML = '';
+            }
+        });
+
         let sortDirections = [0, 0, 0, 0, 0, 0, 0];
 
         // Function to toggle the sort direction and send the query
@@ -308,7 +538,7 @@
             // Update the active column's button to show the correct direction
             button.textContent = direction === 'ASC' ? '▲' : '▼';
         }
-        
     </script>
+
 </body>
 </html>
