@@ -516,30 +516,6 @@
             }
         });
 
-        socket.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
-
-            // Check if this is the team info response
-            if (data.queryType === 'teamInfo') {
-                // Update team info elements
-                document.getElementById('teamName').textContent = data.teamName || 'N/A';
-                document.getElementById('stadium').textContent = data.stadium || 'N/A';
-                document.getElementById('city').textContent = data.city || 'N/A';
-
-                // Populate the pitchers list
-                const pitchersList = document.getElementById('pitchersList');
-                pitchersList.innerHTML = ''; // Clear previous entries
-
-                data.pitchers.forEach(pitcher => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${pitcher.firstName} ${pitcher.lastName}`;
-                    pitchersList.appendChild(listItem);
-                });
-            }
-        });
-
-
-
         let sortDirections = [0, 0, 0, 0, 0, 0, 0];
 
         // Function to toggle the sort direction and send the query
