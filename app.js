@@ -9,10 +9,10 @@ const port = 3000;
 const { Client } = pg;
 const client = new Client({
     host: 'localhost',
-    port: 5432, // use your postgres db port
-    user: 'PITCHING_TESTER', // create this user/pw in your own postgres
-    password: 'pg_admin',
-    database: 'pitching_stats_db'
+    port: 5432,                     // use your postgres db port
+    user: 'PITCHING_TESTER',        // create this user/pw in your own postgres
+    password: 'pg_admin',           // password for the PITCHING_TESTER user
+    database: 'pitching_stats_db'   // name of database
 });
 
 client.connect()
@@ -21,6 +21,8 @@ client.connect()
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+
+app.use(express.static(path.join(__dirname, '/assets')));
 
 wss.on('connection', (ws) => {
     console.log('Client connected');
@@ -48,7 +50,9 @@ wss.on('connection', (ws) => {
                 ws.send(JSON.stringify({ error: 'Database query failed' })); // error
                 console.error(err);
             }
-        } else if(queryType === 'getPitchersByName'){//searching pitchers by first and last name.
+        } 
+        
+        else if(queryType === 'getPitchersByName'){//searching pitchers by first and last name.
             console.log(`Handling query of type: ${queryType}`)
             try {
                 console.log(`Executing query: SELECT * FROM pitcher p WHERE LTRIM(p.first_name) = ${params[0]} AND p.last_name = ${params[1]}`);
@@ -59,7 +63,9 @@ wss.on('connection', (ws) => {
                 ws.send(JSON.stringify({error: 'Database query failed'}));
                 console.error(err);
             }
-        } else {
+        } 
+        
+        else {
 
 
             try {
