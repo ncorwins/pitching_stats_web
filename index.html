@@ -480,7 +480,7 @@
             const fn = document.getElementById('firstName').value.trim();   // first name
             const ln = document.getElementById('lastName').value.trim();    // last name
 
-            if (!fn || !ln) {
+            if (!fn && !ln) {
                 alert("Please enter both first name and last name.");
                 return;
             }

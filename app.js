@@ -52,7 +52,7 @@ wss.on('connection', (ws) => {
                 console.error(err);
             }
         } else if (queryType === 'getPitchersByName') {
-            console.log(`Handling query of type: ${queryType}`);
+            console.log(`\nQuery Type: ${queryType}`);
             const firstName = params[0] ? params[0].trim() : '';
             const lastName = params[1] ? params[1].trim() : '';
             let query = 'SELECT * FROM pitcher p';
@@ -60,20 +60,20 @@ wss.on('connection', (ws) => {
             let conditions = [];
         
             if (firstName) {
-                conditions.push(`LTRIM(p.first_name) ILIKE $${queryParams.length + 1}`);
-                queryParams.push(firstName);
+                conditions.push(`p.first_name ILIKE $${queryParams.length + 1}`);
+                queryParams.push(`%${firstName}%`);
             }
             if (lastName) {
                 conditions.push(`p.last_name ILIKE $${queryParams.length + 1}`);
-                queryParams.push(lastName);
+                queryParams.push(`%${lastName}%`);
             }
         
             if (conditions.length > 0) {
-                query += ' WHERE ' + conditions.join(' OR ');
+                query += ' WHERE ' + conditions.join(' AND ');
             }
         
             try {
-                console.log(`Executing query: ${query} with params ${queryParams}`);
+                console.log(`Query: ${query} with params ${queryParams}`);
                 const resu = await client.query(query, queryParams);
                 ws.send(JSON.stringify(resu.rows));
             } catch (err) {
