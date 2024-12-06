@@ -424,26 +424,6 @@
             socket.send(query);
         })
 
-        document.getElementById('teamDropdown2').addEventListener('change', () => {
-            const selectedTeam = document.getElementById('teamDropdown2').value;
-
-            if (selectedTeam) {
-                // Send a query to the server to get the team info
-                const queryData = {
-                    queryType: 'getTeamInfo',
-                    teamName: selectedTeam
-                };
-
-                socket.send(JSON.stringify(queryData)); // Send query to server
-            } else {
-                // Clear the team info table if "All" or no team is selected
-                document.getElementById('teamName').textContent = '';
-                document.getElementById('stadium').textContent = '';
-                document.getElementById('city').textContent = '';
-                document.getElementById('pitchersList').innerHTML = '';
-            }
-        });
-
         document.getElementById('resetButton').addEventListener('click', () => {
             // Reset fields
             document.getElementById('teamDropdown').value = "";
