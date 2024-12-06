@@ -95,9 +95,20 @@
 
         #firstName, #lastName,
         #SearchButton, #teamDropdown,
-        #teamDropdown2 {
+        #teamDropdown2, #resetButton {
             font-family: 'Montserrat', sans-serif;
             font-size: 0.8em;
+        }
+
+        #SearchButton {
+            height:21px;
+            min-width: 40px;
+        }
+
+        #resetButton {
+            height: 21px;
+            min-width: 40px;
+            margin-left: 0.5em;
         }
 
         #section2 {
@@ -273,15 +284,19 @@
                     <option value="Orioles">Orioles</option>
                 </select>
             </div>
+
             <div id="firstNameBox">
                 <label id="filterLabel" for="firstName">First Name: </label>
                 <input type="text" id="firstName" placeholder = "Enter pitcher first name">
             </div>
+
             <div id="lastNameBox">
                 <label id="filterLabel" for="lastName">Last Name: </label>
                 <input type="text" id="lastName" placeholder = "Enter pitcher last name">
             </div>
-            <button id="SearchButton">Search Pitchers</button>
+
+            <button id="SearchButton">Search</button>
+            <button id="resetButton">Reset</button>
         </div>  
 
         <!-- Pitcher Table -->
@@ -515,6 +530,17 @@
                 document.getElementById('pitchersList').innerHTML = '';
             }
         });
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            // Reset fields
+            document.getElementById('teamDropdown').value = "";
+            document.getElementById('firstName').value = "";
+            document.getElementById('lastName').value = "";
+
+            // Request all pitchers again
+            socket.send('getPitchers');
+        });
+
 
         let sortDirections = [0, 0, 0, 0, 0, 0, 0];
 
